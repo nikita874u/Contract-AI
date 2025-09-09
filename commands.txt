@@ -1,0 +1,11 @@
+cd backend
+python -m venv venv
+venv\Scripts\activate   # Windows
+pip install -r src/requirements.txt
+uvicorn src.api.app:app --reload
+
+
+cd frontend
+npm create vite@latest .  # if not done already
+npm install
+npm run dev
