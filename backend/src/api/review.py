@@ -1,15 +1,38 @@
-# Simple rule-based contract reviewer
+from transformers import pipeline
+import json
 
-KEY_TERMS = {
-    "Confidentiality": "Check if details are too vague.",
-    "Termination": "Check if notice period is missing.",
-    "Payment": "Check payment terms clarity.",
-    "Liability": "Check liability limits.",
-}
+# Hugging Face pipeline load karo (lightweight model)
+nlp = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
 
-def analyze_contract(text: str):
-    results = []
-    for term, warning in KEY_TERMS.items():
-        if term.lower() in text.lower():
-            results.append({"term": term, "warning": warning})
-    return results
+def analyze_contract_ai(text: str):
+    try:
+        # Important terms to check in contract
+        candidate_labels = [
+            "Confidentiality",
+            "Termination",
+            "Payment",
+            "Liability",
+            "Governing Law",
+            "Penalty",
+            "Services"
+        ]
+
+        # Zero-shot classification
+        result = nlp(text, candidate_labels)
+
+        # Convert results into JSON-like format
+        analysis = []
+        for label, score in zip(result["labels"], result["scores"]):
+            if score > 0.3:  # filter weak matches
+                analysis.append({
+                    "term": label,
+                    "warning": f"Detected with confidence {round(score*100, 2)}%"
+                })
+
+        if not analysis:
+            analysis = [{"term": "Notice", "warning": "No major terms detected"}]
+
+        return analysis
+
+    except Exception as e:
+        return [{"term": "Error", "warning": str(e)}]
