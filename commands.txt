@@ -1,27 +1,17 @@
-cd backend
-python -m venv venv
-venv\Scripts\activate   # Windows
-pip install -r src/requirements.txt
-uvicorn src.api.app:app --reload
-
-
+for frontend setup:-
 cd frontend
 npm create vite@latest .  # if not done already
 npm install
+
+
+for run:- (Note please check you are in frontend folder in terminal)
 npm run dev
 
-
-
-
+for backend setup:-
 cd backend
 python -m venv venv
 venv\Scripts\activate    # Windows
-# OR
-source venv/bin/activate  # macOS/Linux
-
 pip install fastapi uvicorn python-multipart openai
 
-setx OPENAI_API_KEY "your_api_key_here"
-ai key: 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
-
-HF_Key: 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
+for run:- (Note please check you are in backend folder in terminal)
+uvicorn src.api.app:app --reload
