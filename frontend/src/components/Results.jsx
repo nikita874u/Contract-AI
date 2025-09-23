@@ -1,7 +1,9 @@
 function Results({ results }) {
   return (
     <div className="mt-10 w-full max-w-3xl space-y-6">
-      <h2 className="text-2xl font-semibold text-gray-800">📊 Analysis Results</h2>
+      <h2 className="text-2xl font-semibold text-gray-800">
+        📊 Analysis Results
+      </h2>
       {results.map((res, idx) => (
         <div
           key={idx}

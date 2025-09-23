@@ -35,11 +35,7 @@ function UploadBox({ onResults }) {
           </p>
           <p className="text-xs text-gray-500 mt-1">(.txt or .docx)</p>
         </div>
-        <input
-          type="file"
-          onChange={handleUpload}
-          className="hidden"
-        />
+        <input type="file" onChange={handleUpload} className="hidden" />
       </label>
 
       {loading && (
