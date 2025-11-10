@@ -1,8 +1,6 @@
-import { useState } from "react";
+import { UploadCloud } from "lucide-react";
 
-function UploadBox({ onResults }) {
-  const [loading, setLoading] = useState(false);
-
+function UploadBox({ onResults, setLoading, darkMode }) {
   const handleUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -12,43 +10,51 @@ function UploadBox({ onResults }) {
 
     try {
       setLoading(true);
-      const res = await fetch("http://127.0.0.1:8000/analyze/", {
+      const res = await fetch("http://127.0.0.1:8000/analyze_contract", {
         method: "POST",
         body: formData,
       });
       const data = await res.json();
-      onResults(data.results);
-    } catch (err) {
-      console.error("Upload failed", err);
-      onResults([]);
+      onResults(data);
+    } catch (error) {
+      onResults({ error: "⚠️ Unable to connect to FastAPI server." });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md flex flex-col items-center">
-      <label className="w-full cursor-pointer">
-        <div className="p-6 border-2 border-dashed border-blue-400 rounded-xl text-center bg-white hover:bg-blue-50 transition shadow-sm">
-          <p className="text-gray-700 font-medium">
-            📂 Upload your contract file
-          </p>
-          <p className="text-xs text-gray-500 mt-1">(.txt or .docx)</p>
-        </div>
-        <input type="file" onChange={handleUpload} className="hidden" />
-      </label>
-
-      {loading && (
-        <div className="mt-6 w-full p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl shadow-lg border border-blue-200 flex flex-col items-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500 border-solid mb-4"></div>
-          <p className="text-blue-700 font-semibold text-lg text-center">
-            ⏳ Analyzing your contract...
-          </p>
-          <p className="text-gray-500 text-sm text-center mt-2">
-            This may take a few seconds depending on contract length.
-          </p>
-        </div>
-      )}
+    <div
+      className={`border-2 border-dashed rounded-2xl p-8 mb-8 transition-all ${
+        darkMode
+          ? "border-blue-900 bg-gray-800/50 hover:bg-gray-800/70"
+          : "border-blue-300 bg-gradient-to-br from-white to-blue-50 hover:from-blue-50 hover:to-blue-100"
+      }`}
+    >
+      <UploadCloud
+        className={`w-14 h-14 mx-auto mb-3 animate-pulse ${
+          darkMode ? "text-blue-400" : "text-blue-500"
+        }`}
+      />
+      <h3
+        className={`text-xl font-semibold ${
+          darkMode ? "text-gray-200" : "text-gray-800"
+        }`}
+      >
+        Upload your contract file
+      </h3>
+      <p className={`text-sm mb-4 ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+        (Supports .txt or .pdf)
+      </p>
+      <input
+        type="file"
+        accept=".txt,.pdf"
+        onChange={handleUpload}
+        className="block mx-auto file:mr-3 file:py-2 file:px-5 file:rounded-full file:border-0 
+                   file:bg-gradient-to-r file:from-blue-500 file:to-indigo-500 
+                   file:text-white file:font-semibold hover:file:from-indigo-600 hover:file:to-blue-600 
+                   cursor-pointer transition-all"
+      />
     </div>
   );
 }
